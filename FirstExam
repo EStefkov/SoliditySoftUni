@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.17;
+
+//Made by @E.Stefkov
+//@title Fisrt smartContract
+contract A_MyContract {
+    
+    uint256 public  totalShares;
+    mapping(address => uint) public shares;
+    // setvame owner pri constant spestqvame gas fee.
+    address public owner;
+
+    uint256 public number;
+    
+    enum Options {
+        One,
+        TWO,
+        THREE
+
+    }
+    error Unathorized(string reason);
+
+   // po tozi nachin setvame owner.
+    constructor(){
+        owner = msg.sender;
+    }
+    
+    function kill() external {
+        selfdestruct ( payable (owner));
+    }
+    
+    function addShares(address receiver) external  payable {
+        require(msg.sender == owner, "Not owner");
+
+        totalShares +=msg.value;
+        shares[receiver] += msg.value;
+    }
+    //ako napravim functiona getEthers public mojem da q vikame vutreshno
+
+/*
+    function getEthersHandler()public  pure returns (uint256 amount, uint256 secondAmount){
+        (uint256 amount, uint256 thirdAmount) = getEthers();
+        return (amount,thirdAmount);
+
+    }
+  */  
+
+    function getEthers()external  pure returns (uint256 amount, uint256 secondAmount){
+        return (1 ether,2 ether);
+
+    }
+    function getShares (address investor) external view returns (uint256){
+        return shares[investor];
+    }
+    // pri external ne mojem da dostupim funkciqta whoAmI v drugite.
+    // pri private imame vuzmojnosta da vikame funkciqta v drugite. 
+    function whoAmI() private view returns (address){
+        return msg.sender;
+    }
+    function whoAmIHandler() external view returns (address){
+        return whoAmI();
+    }
+    function who() external view returns (address){
+        return address(this);
+    }
+    function isTrue() public pure returns (bool){
+        uint256 first =1;
+        uint256 second =2;
+        return first == second;
+    }
+    function getEnum(Options option) external pure returns (Options){
+        return option;
+    }
+    function increase() external returns (uint256){
+        number++;
+        return number;
+    }
+    function getSharess(address stakeholder) external view  returns (uint256,uint256) {
+        return (shares[stakeholder],totalShares);
+    }
+
+}
